@@ -25,46 +25,46 @@ involved.
 ## 4. The kernel is holy.
 
 Touch the kernel only when absolutely necessary and with great care. No
-application logic belongs there; it provides the foundation for the
-application layer. Keep application behavior and policy in independently
-evolving Deno packages.
+application logic belongs there; it provides the foundation for the application
+layer. Keep application behavior and policy in independently evolving Deno
+packages.
 
 ## 5. Use the shared runtime.
 
-Build on ordinary programs, services, jobs, hooks, and events using the
-existing Worker runtime. Access kernel capabilities through the typed bridge
-and trusted execution context. Extend shared mechanisms at their owner when
-necessary, keeping them reusable across packages.
+Build on ordinary programs, services, jobs, hooks, and events using the existing
+Worker runtime. Access kernel capabilities through the typed bridge and trusted
+execution context. Extend shared mechanisms at their owner when necessary,
+keeping them reusable across packages.
 
 ## 6. Share definitions across layers.
 
-Compose ordinary Zod schemas and reuse their meaning across validation,
-database tables, forms, and lists. Let shared database codecs handle physical
+Compose ordinary Zod schemas and reuse their meaning across validation, database
+tables, forms, and lists. Let shared database codecs handle physical
 representations and the UUI framework handle browser presentation. Keep these
-translations in their owning layers so application programs stay consistent
-and small.
+translations in their owning layers so application programs stay consistent and
+small.
 
 ## 7. Give state and lifetimes clear owners.
 
-Keep durable shared facts in the database and make node-local indexes and
-caches explicitly derived. Distinguish connections, logical executions,
-Workers, and sandboxes, with clear rules for completion, cancellation, and
-cleanup. Reconnection or retry must respect the original execution’s identity
-and outcome.
+Keep durable shared facts in the database and make node-local indexes and caches
+explicitly derived. Distinguish connections, logical executions, Workers, and
+sandboxes, with clear rules for completion, cancellation, and cleanup.
+Reconnection or retry must respect the original execution’s identity and
+outcome.
 
 ## 8. Bound work and resource use.
 
-Keep queries, queues, retained output, background scans, and concurrency
-bounded as the platform grows. Use targeted reads and updates, short
-transactions, and explicit timeouts. Avoid holding broad locks across
-filesystem, process, or network operations.
+Keep queries, queues, retained output, background scans, and concurrency bounded
+as the platform grows. Use targeted reads and updates, short transactions, and
+explicit timeouts. Avoid holding broad locks across filesystem, process, or
+network operations.
 
 ## 9. Fix and verify at the owner.
 
 Read the applicable contracts and trace the full path before changing code.
-Repair shared defects at their source, then verify both the owning layer and
-the affected application flow. Keep documentation aligned with deliberate
-changes across repository boundaries.
+Repair shared defects at their source, then verify both the owning layer and the
+affected application flow. Keep documentation aligned with deliberate changes
+across repository boundaries.
 
 # Repository guidance
 
@@ -185,8 +185,8 @@ No child DOX documents. This document owns the entire repository.
 
 ## Purpose
 
-- Maintain two complementary statements of the 80|20 philosophy, grounded in
-  the user's intentions.
+- Maintain two complementary statements of the 80|20 philosophy, grounded in the
+  user's intentions.
 
 ## Ownership
 
@@ -237,5 +237,5 @@ No child DOX documents. This document owns the entire repository.
 - Check both editions for their stated role, appropriate technical depth, and
   the motto plus one-to-three-sentence format. Keep implementation findings
   outside the Zen elements; this repository has no application test suite.
-- Check that the workspace root carries the same nine agent principles and
-  that affected domain guidance remains consistent with them.
+- Check that the workspace root carries the same nine agent principles and that
+  affected domain guidance remains consistent with them.

@@ -33,9 +33,9 @@ programs, and screens should reinforce that understanding.
 
 ## 6. Leave room for creativity.
 
-Use conventions to make ordinary work easy while leaving clear ways to adapt
-and extend the design. Useful defaults should support different approaches as
-needs evolve.
+Use conventions to make ordinary work easy while leaving clear ways to adapt and
+extend the design. Useful defaults should support different approaches as needs
+evolve.
 
 ## 7. Keep dependencies deliberate.
 
@@ -54,8 +54,8 @@ The strongest evidence of intent is the user's supplied material:
 - New concepts should combine across the system, remain simple, and leave room
   for customization. Verification should serve the actual problem.
 - Development should isolate work, merge through Git, preserve running processes
-  across activation and browser navigation, and keep recoverable private
-  changes without expensive background scans.
+  across activation and browser navigation, and keep recoverable private changes
+  without expensive background scans.
 - The kernel should be a stable foundation with clear boundaries. Packages
   should own changing system logic because they are easier to update.
 - Repairs should follow ownership through the complete data flow and fix shared
@@ -75,19 +75,19 @@ this review does not change platform behavior.
 
 The separate [workspace architecture audit](../PLATFORM_REVIEW.md) extends this
 review into dependency resolution, cross-node source distribution and startup
-convergence, resource admission, transport bounds, and package compatibility.
-It records its own experiments and their limits. Both reports are assessment
+convergence, resource admission, transport bounds, and package compatibility. It
+records its own experiments and their limits. Both reports are assessment
 snapshots; the Zen above remains the proposed philosophy for discussion.
 
 ### The boundary to aim for
 
-| Responsibility | Owning layer |
-| --- | --- |
-| Host processes, sandbox isolation, mounts, network listeners, routing, resource limits, private keys | Kernel |
-| Database connections, execution-scoped transactions, physical schema enforcement, safe host publication primitives | Kernel |
-| Account eligibility, passwords, sessions, schedules, service declarations/defaults, development workflow, administration | Deno packages |
-| Field meaning, help, domain relationships, screens, application session behavior | Owning packages and shared Deno libraries |
-| Published source identity, resolved runtime specifications, physical descriptors, execution identity | Explicit contracts between those owners |
+| Responsibility                                                                                                           | Owning layer                              |
+| ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| Host processes, sandbox isolation, mounts, network listeners, routing, resource limits, private keys                     | Kernel                                    |
+| Database connections, execution-scoped transactions, physical schema enforcement, safe host publication primitives       | Kernel                                    |
+| Account eligibility, passwords, sessions, schedules, service declarations/defaults, development workflow, administration | Deno packages                             |
+| Field meaning, help, domain relationships, screens, application session behavior                                         | Owning packages and shared Deno libraries |
+| Published source identity, resolved runtime specifications, physical descriptors, execution identity                     | Explicit contracts between those owners   |
 
 The deciding question is what requires kernel authority or must remain available
 to recover the system. A feature being important, shared, or part of system
@@ -97,11 +97,11 @@ validate, and recover safely.
 
 ### 1. The later developer can overwrite an earlier conflicting edit
 
-**High priority; demonstrated by an existing test.**
-`scanPackageChanges` takes the current shared HEAD as the base of each scan.
-`preparePackage` uses three-way Git machinery only if shared HEAD advances
-again after that capture. It therefore lacks the original base of an already
-private edit when another developer has published before the scan.
+**High priority; demonstrated by an existing test.** `scanPackageChanges` takes
+the current shared HEAD as the base of each scan. `preparePackage` uses
+three-way Git machinery only if shared HEAD advances again after that capture.
+It therefore lacks the original base of an already private edit when another
+developer has published before the scan.
 [Scan and preparation](../kernel/kernel/development/activation.go).
 
 `TestActivationRebasesPrivateOverlayOnCurrentSharedSource` edits the same file
@@ -119,11 +119,11 @@ and publication contract to repair, not a UUI conflict dialog workaround.
 
 ### 2. Successful publication destroys running development processes
 
-**High priority; source and existing test agree.**
-`Activate` calls `resetOverlayLocked`, which kills and deletes the sandbox
-before starting it again. The terminal helper gets a special deferred reset
-after a 300 ms delay; it still ends in the same destruction. Retaining a sandbox
-ID, home directory, and installed tools does not retain its running processes.
+**High priority; source and existing test agree.** `Activate` calls
+`resetOverlayLocked`, which kills and deletes the sandbox before starting it
+again. The terminal helper gets a special deferred reset after a 300 ms delay;
+it still ends in the same destruction. Retaining a sandbox ID, home directory,
+and installed tools does not retain its running processes.
 [Activation](../kernel/kernel/development/activation.go),
 [reset and delay](../kernel/kernel/development/overlay.go),
 [helper response path](../kernel/kernel/development/manager.go).
@@ -136,23 +136,23 @@ disappear when that owning lifecycle contract is corrected.
 
 ### 3. A console connection owns the terminal's lifetime
 
-**High priority; demonstrated by the WebSocket test.**
-The browser console is disposed on navigation; the Go broker opens a PTY using
-the WebSocket request context and closes it when the connection ends. The
-protocol opens a new console rather than attaching to an independently
-identified running terminal. `TestConsoleWebSocketStreamsAndResizes` requires
-the console to close with its WebSocket and passed.
+**High priority; demonstrated by the WebSocket test.** The browser console is
+disposed on navigation; the Go broker opens a PTY using the WebSocket request
+context and closes it when the connection ends. The protocol opens a new console
+rather than attaching to an independently identified running terminal.
+`TestConsoleWebSocketStreamsAndResizes` requires the console to close with its
+WebSocket and passed.
 [Browser lifecycle](../uui/services/shell/frontend/custom_elements.ts),
 [broker](../kernel/kernel/console/console.go),
 [test](../kernel/kernel/console/console_test.go).
 
 Give terminal execution an explicit owner and attach/detach lifetime, with
-bounded output retention and explicit termination. Generic process/PTY
-mechanics belong at the execution boundary; terminal selection and navigation
-belong in packages. A server-side terminal owner inside the sandbox may also
-be appropriate; evaluate that against existing capabilities before adding a
-second process-management framework. Browser reconnect alone cannot preserve
-a process whose server-side owner has closed it.
+bounded output retention and explicit termination. Generic process/PTY mechanics
+belong at the execution boundary; terminal selection and navigation belong in
+packages. A server-side terminal owner inside the sandbox may also be
+appropriate; evaluate that against existing capabilities before adding a second
+process-management framework. Browser reconnect alone cannot preserve a process
+whose server-side owner has closed it.
 
 ### 4. Checkpoint persistence does not establish recovery from sandbox loss
 
@@ -177,8 +177,8 @@ Define when a successful private write becomes recoverable and how publication
 separates captured changes from later writes. Preserve recoverable state on
 checkpoint failure and validate recovery after forced loss, including readable
 reapplication elsewhere. The solution must satisfy this without an expensive
-background scan; existing patch checkpoints are useful but insufficient proof
-of that stronger contract.
+background scan; existing patch checkpoints are useful but insufficient proof of
+that stronger contract.
 
 ### 5. A shared repository lock encloses slow and extensible work
 
@@ -186,8 +186,8 @@ of that stronger contract.
 Development activation pauses its sandbox, takes the shared repository mutex,
 and retains it through Git preparation, schema evaluation, activation hooks,
 publication, and overlay handling. Package repository mutation also holds that
-shared mutex across staging and activation. Composition supplies the same
-mutex to both managers.
+shared mutex across staging and activation. Composition supplies the same mutex
+to both managers.
 [Development activation](../kernel/kernel/development/activation.go),
 [repository mutation](../kernel/kernel/packages/repository.go),
 [composition](../kernel/kernel/app/runtime.go).
@@ -202,12 +202,12 @@ developers and slow/reentrant hooks before claiming latency or deadlock safety.
 
 ### 6. Package-owned schemas can conceal kernel-owned policy
 
-**Boundary discrepancy; some native authority is necessary.**
-The `packages` repository owns table definitions and command programs, but Go
-implements desired/active package records, activation phase history, hook
-checkpoints, and publication. Development Go also chooses commit author
-defaults, commit-message metadata, selection behavior, and the workflow around
-private changes. The package command surface delegates to those implementations.
+**Boundary discrepancy; some native authority is necessary.** The `packages`
+repository owns table definitions and command programs, but Go implements
+desired/active package records, activation phase history, hook checkpoints, and
+publication. Development Go also chooses commit author defaults, commit-message
+metadata, selection behavior, and the workflow around private changes. The
+package command surface delegates to those implementations.
 [Package contract](../packages/AGENTS.md),
 [package records](../kernel/kernel/packages/package_index_database.go),
 [activation coordinator](../kernel/kernel/packages/activation.go),
@@ -217,19 +217,19 @@ Schema residence alone therefore does not deliver independent policy updates.
 Separate the minimum boot/recovery and host-publication contract from editable
 development and package-management policy. Keep native mutations validated in
 Go, while moving policy that can change independently to the owning packages.
-Any records Go must read to boot become an explicit compatibility contract,
-even if authored as package tables; they cannot be treated as freely changeable
-application schemas. Resolve that bootstrap dependency before moving recovery
-or activation orchestration wholesale.
+Any records Go must read to boot become an explicit compatibility contract, even
+if authored as package tables; they cannot be treated as freely changeable
+application schemas. Resolve that bootstrap dependency before moving recovery or
+activation orchestration wholesale.
 
 ### 7. The authentication transport fixes part of the session model in Go
 
-**Boundary decision; not a demonstrated authentication failure.**
-Go token verification requires `sid` and positive-integer `ver`, while Deno
-users creates and interprets those session and account-version fields. Go also
-constructs rejected-cookie deletion headers while users constructs application
-cookies. These choices are explicitly documented today, so the question is
-whether that is the intended long-term platform contract.
+**Boundary decision; not a demonstrated authentication failure.** Go token
+verification requires `sid` and positive-integer `ver`, while Deno users creates
+and interprets those session and account-version fields. Go also constructs
+rejected-cookie deletion headers while users constructs application cookies.
+These choices are explicitly documented today, so the question is whether that
+is the intended long-term platform contract.
 [Go token profile](../kernel/kernel/auth/token.go),
 [users policy](../users/src/authentication.ts),
 [current ownership contract](../kernel/kernel/auth/AGENTS.md).
@@ -257,10 +257,10 @@ discovery. These are materially different meanings of an available program.
 
 Define one authoritative contract for program availability and let UUI own
 interactive invocation and presentation. Reuse or extend the existing catalog
-contract, including an explicit development view if needed. Bound discovery
-work and refresh it at meaningful source changes. The current UUI DOX
-specifically asks for rescanning, so fixing this requires an agreed contract
-change rather than labeling the implementation a violation of its local docs.
+contract, including an explicit development view if needed. Bound discovery work
+and refresh it at meaningful source changes. The current UUI DOX specifically
+asks for rescanning, so fixing this requires an agreed contract change rather
+than labeling the implementation a violation of its local docs.
 [Home contract](../uui/programs/home/AGENTS.md).
 
 ### A further release-contract question
@@ -268,8 +268,8 @@ change rather than labeling the implementation a violation of its local docs.
 Service versions record package commits and resolved policy, and job reuse
 compares release IDs. Runtime sandboxes nevertheless mount the shared package
 source, development activation mutates that source, and Workers import ordinary
-entrypoint URLs. Metadata identifying a release does not by itself establish
-an immutable filesystem or a complete dependency release.
+entrypoint URLs. Metadata identifying a release does not by itself establish an
+immutable filesystem or a complete dependency release.
 [Version records](../services/src/indexing.ts),
 [shared mount](../kernel/kernel/app/runtime.go),
 [job identity](../kernel/kernel/execution/programs/programs.go),
@@ -281,9 +281,9 @@ activation, and a reused job after a dependency-only package update. Specify
 which source and dependency version each execution must see. Mixed-source
 behavior remains a source-derived risk in this review. The separate
 [workspace audit](../PLATFORM_REVIEW.md) reports an actual RuntimeWorker
-experiment in which an existing Worker retained the old dependency while a
-fresh Worker loaded the new value; job reuse is opt-in. That narrower result
-does not establish the behavior of a live service across activation. Settle both
+experiment in which an existing Worker retained the old dependency while a fresh
+Worker loaded the new value; job reuse is opt-in. That narrower result does not
+establish the behavior of a live service across activation. Settle both
 contracts before claiming fully isolated release switching.
 
 ### Existing choices that support the philosophy
@@ -298,10 +298,10 @@ contracts before claiming fully isolated release switching.
   [Scheduler](../jobs/src/runner.ts).
 - Users owns password hashing and account/session validation, and UUI owns its
   protocol, replay, program recovery, and session metadata. These should remain
-  package behavior.
-  [Users contract](../users/AGENTS.md), [UUI contract](../uui/AGENTS.md).
-- Deno DB owns authored descriptors, logical codecs, and Kysely integration;
-  Go owns credentials, connection lifetime, and physical schema enforcement.
+  package behavior. [Users contract](../users/AGENTS.md),
+  [UUI contract](../uui/AGENTS.md).
+- Deno DB owns authored descriptors, logical codecs, and Kysely integration; Go
+  owns credentials, connection lifetime, and physical schema enforcement.
   Revalidating a physical descriptor at that authority boundary is appropriate.
   [DB contract](../db/AGENTS.md),
   [physical database contract](../kernel/kernel/database/AGENTS.md).
@@ -309,8 +309,7 @@ contracts before claiming fully isolated release switching.
   Keep callbacks and meaning in Deno and presentation in UUI; do not put help
   handlers into physical SQL descriptors or invent another package solely to
   rename the existing pure helper module. Unfinished work is not itself an
-  architectural discrepancy.
-  [Current field helpers](../db/fields.ts),
+  architectural discrepancy. [Current field helpers](../db/fields.ts),
   [descriptor guidance](../db/src/AGENTS.md), [UUI adapter](../uui/fields.ts).
 - The current trusted-package execution model is explicit in the kernel
   contract. Missing granular permissions are a declared phase limitation, not
@@ -332,10 +331,10 @@ focused existing checks passed from the kernel repository:
 
 The development checks use real Git with a fake sandbox driver; the console
 check uses a real WebSocket with a fake console provider. They prove the tested
-contracts, including the unwanted overwrite/reset/disconnect expectations.
-They do not prove live gVisor behavior, browser usability, crash recovery,
-multi-node operation, or performance. No such runtime or benchmark claims are
-made by this review.
+contracts, including the unwanted overwrite/reset/disconnect expectations. They
+do not prove live gVisor behavior, browser usability, crash recovery, multi-node
+operation, or performance. No such runtime or benchmark claims are made by this
+review.
 
 Discuss the principles first. For implementation, prioritize preservation and
 correct publication of private work, then independent terminal lifetime and
