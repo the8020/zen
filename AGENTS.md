@@ -192,8 +192,7 @@ No child DOX documents. This document owns the entire repository.
 
 - This independent `zen` repository contains exactly two authored files.
 - `README.md` owns Zen for humans: higher-level design of content, programs,
-  screens, package bundles, and whole systems. Its collapsed background section
-  preserves the source summaries and supporting architecture review.
+  screens, package bundles, and whole systems.
 - `AGENTS.md` owns Zen for agents: development and work with system internals,
   including ownership, contracts, implementation, resource costs, and
   verification. It also contains the full DOX framework and repository guidance.
@@ -211,11 +210,8 @@ No child DOX documents. This document owns the entire repository.
   keep those local versions concrete and let covered descendants inherit them.
 - Apply the Zen with the owning workspace and repository contracts. Report
   conflicts rather than treating an implementation accident as a principle.
-- The architecture review is a dated assessment with proposed changes, separate
-  from the principles. Its recommendations do not become implementation
-  requirements through their inclusion as background.
-- Keep the two-file structure. Supporting discussion stays in the collapsed
-  background section of README.md.
+- Keep the two-file structure and enduring principles. Completed reviews and
+  temporary implementation reports do not belong in either edition.
 
 ## Work Guidance
 
@@ -225,8 +221,8 @@ No child DOX documents. This document owns the entire repository.
   and grounded in the platform's languages, packages, execution model, and
   ownership boundaries; describe stable architectural rules rather than a
   particular feature or incident.
-- Adapt the explanation to its audience and consolidate overlapping ideas.
-  Preserve concrete examples and findings as supporting material.
+- Adapt the explanation to its audience and consolidate overlapping ideas. Use
+  concrete examples when they clarify an enduring principle.
 
 ## Verification
 
